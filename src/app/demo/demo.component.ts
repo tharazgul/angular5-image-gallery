@@ -12,7 +12,7 @@ export class DemoComponent implements OnInit {
   public flexBorderSize: number = 1
   public flexImageSize: number = 7
   public galleryName: string = ''
-  public containerBackgroundColor: string = 'black'
+  public containerBackgroundColor: string = '#222222'
 
   ngOnInit() {
   }

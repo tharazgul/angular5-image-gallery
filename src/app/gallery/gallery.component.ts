@@ -16,7 +16,7 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
     @Input('flexBorderSize') providedImageMargin: number = 1
     @Input('flexImageSize') providedImageSize: number = 7
     @Input('galleryName') providedGalleryName: string = ''
-    @Input('containerBackgroundColor') providedContainerBackgroundColor: string = 'black'
+    @Input('containerBackgroundColor') providedContainerBackgroundColor: string = '#222222'
     @Input('metadataUri') providedMetadataUri: string = undefined
 
     @Output() viewerChange = new EventEmitter<boolean>()

@@ -8,7 +8,7 @@ Before using the gallery, you have to process all of your images that will be pa
 
 ## Demo
 
-http://tharazgul.bplaced.net/angular5-image-gallery/
+http://tharazgul.bplaced.net/
 
 1. json example: 
 ```
