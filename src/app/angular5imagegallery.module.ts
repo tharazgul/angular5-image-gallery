@@ -8,15 +8,14 @@ import {ViewerComponent} from './viewer/viewer.component';
 import {DemoComponent} from './demo/demo.component';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
-import {ImagePipe} from './services/image.pipe';
+
 
 
 @NgModule({
     declarations: [
         GalleryComponent,
         ViewerComponent,
-        DemoComponent,
-        ImagePipe
+        DemoComponent   
     ],
     imports: [
         CommonModule,

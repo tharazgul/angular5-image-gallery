@@ -1,14 +1,11 @@
 import {
-    ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, QueryList,
-    SimpleChanges, ViewChild, ViewChildren
-} from '@angular/core'
-import {ImageService} from '../services/image.service'
+    Component, ViewChild, ElementRef, HostListener, ViewChildren,
+    ChangeDetectorRef, QueryList, OnInit, Input, SimpleChanges, OnChanges, Output, EventEmitter, OnDestroy
+} from "@angular/core"
+import {Http, Response} from "@angular/http"
+import {ImageService} from "../services/image.service"
 import {Subscription} from 'rxjs/Subscription'
 import 'rxjs/add/operator/map'
-import {HttpClient} from '@angular/common/http';
-
-declare var jquery:any;
-declare var $ :any;
 
 @Component({
     selector: 'gallery',
@@ -16,9 +13,10 @@ declare var $ :any;
     styleUrls: ['./gallery.component.css']
 })
 export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
-    @Input('flexBorderSize') providedImageMargin: number = 3
+    @Input('flexBorderSize') providedImageMargin: number = 1
     @Input('flexImageSize') providedImageSize: number = 7
     @Input('galleryName') providedGalleryName: string = ''
+    @Input('containerBackgroundColor') providedContainerBackgroundColor: string = 'black'
     @Input('metadataUri') providedMetadataUri: string = undefined
 
     @Output() viewerChange = new EventEmitter<boolean>()
@@ -26,11 +24,11 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
     @ViewChild('galleryContainer') galleryContainer: ElementRef
     @ViewChildren('imageElement') imageElements: QueryList<any>
 
-    @HostListener('window:scroll', ['$event']) triggerCycle(event: any) {
+    @HostListener('window:scroll', ['$event']) triggerCycle(event : any) {
         this.scaleGallery()
     }
 
-    @HostListener('window:resize', ['$event']) windowResize(event: any) {
+    @HostListener('window:resize', ['$event']) windowResize(event : any) {
         this.render()
     }
 
@@ -42,14 +40,13 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
     public minimalQualityCategory = 'preview_xxs'
     public viewerSubscription: Subscription
 
-    constructor(public ImageService: ImageService, public http: HttpClient, public ChangeDetectorRef: ChangeDetectorRef) {
+    constructor(public ImageService: ImageService, public http: Http, public ChangeDetectorRef: ChangeDetectorRef) {
     }
 
     public ngOnInit() {
         this.fetchDataAndRender()
         this.viewerSubscription = this.ImageService.showImageViewerChanged$
-            .subscribe((visibility: boolean) => this.viewerChange.emit(visibility));
-
+            .subscribe((visibility: boolean) => this.viewerChange.emit(visibility))
     }
 
     public ngOnChanges(changes: SimpleChanges) {
@@ -66,7 +63,7 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
-    public openImageViewer(img: any) {
+    public openImageViewer(img  : any) {
         this.ImageService.updateImages(this.images)
         this.ImageService.updateSelectedImageIndex(this.images.indexOf(img))
         this.ImageService.showImageViewer(true)
@@ -77,14 +74,15 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
 
         if (!this.providedMetadataUri) {
             this.imageDataCompletePath = this.providedGalleryName != '' ?
-                this.imageDataStaticPath + this.providedGalleryName + '/' + this.dataFileName :
-                this.imageDataStaticPath + this.dataFileName
+            this.imageDataStaticPath + this.providedGalleryName + '/' + this.dataFileName :
+            this.imageDataStaticPath + this.dataFileName
         }
 
         this.http.get(this.imageDataCompletePath)
+            .map((res: Response) => res.json())
             .subscribe(
                 data => {
-                    this.images = (<any>data)
+                    this.images = data
                     this.ImageService.updateImages(this.images)
 
                     this.images.forEach((image) => {
@@ -95,14 +93,10 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
                     // twice, single leads to different strange browser behaviour
                     this.render()
                     this.render()
-                    $('[data-toggle="popover"]').popover()
                 },
-                err => {
-                    this.providedMetadataUri ?
-                        console.error("Provided endpoint '" + this.providedMetadataUri + "' did not serve metadata correctly or in the expected format. \n\nSee here for more information: https://github.com/BenjaminBrandmeier/angular2-image-gallery/blob/master/docs/externalDataSource.md,\n\nOriginal error: " + err) :
-                        console.error("Did you run the convert script from angular2-image-gallery for your images first? Original error: " + err);
-                    this.gallery = []
-                },
+                err => this.providedMetadataUri ?
+                  console.error("Provided endpoint '"+this.providedMetadataUri+"' did not serve metadata correctly or in the expected format. \n\nSee here for more information: https://github.com/BenjaminBrandmeier/angular2-image-gallery/blob/master/docs/externalDataSource.md,\n\nOriginal error: " + err) :
+                  console.error("Did you run the convert script from angular2-image-gallery for your images first? Original error: " + err),
                 () => undefined)
     }
 
@@ -128,51 +122,6 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
         this.scaleGallery()
     }
 
-    public downloadImage(path:string, name:string){
-        this.ImageService.downloadImage(path)
-            .subscribe(imageFile => {
-                let downloadUrl= window.URL.createObjectURL(imageFile);
-                let anchor = document.createElement("a");
-                anchor.download = name;
-                anchor.href = downloadUrl;
-                anchor.click();
-            });
-    }
-
-    public parseExifData(img: any): string {
-        let exifData: any = img['exifData'];
-        let tags: any[] = img['tags'];
-        if(exifData === null || exifData=== undefined){
-            return null;
-        }
-        let exifHtml:string = "";
-        if(exifData['cameraModel'])
-            exifHtml += 'Camera Model: ' + exifData['cameraModel'] + '<br/>';
-        if(exifData['cameraModel'])
-            exifHtml += 'Created: ' + this.parseDate(exifData['recordedDate']) + '<br/>';
-        if(exifData['cameraModel'])
-            exifHtml += 'Size: ' + exifData['width'] + 'x' + exifData['height'] + '<br/>'
-        if(exifData['cameraModel'])
-            exifHtml += 'Orientation: ' + exifData['orientation'] + '<br/>';
-        if(tags && tags.length != 0){
-            exifHtml += 'tags: ';
-            for(let tag of tags){
-                exifHtml += '<span class="badge badge-info">' + tag.name + '</span>'
-            }
-        }
-        return exifHtml;
-    }
-
-    private parseDate(timestamp: number) {
-        let date = new Date(timestamp);
-        return date.getFullYear() + "-" + this.pad(date.getMonth() + 1, 2) + "-" + this.pad(date.getDate(),2) + " " + date.getHours() + ":" + date.getMinutes();
-    }
-
-    private pad(num, size) {
-        let s = "000000000" + num;
-        return s.substr(s.length - size);
-    }
-
     private shouldAddCandidate(imgRow: any[], candidate: any): boolean {
         let oldDifference = this.calcIdealHeight() - this.calcRowHeight(imgRow)
         imgRow.push(candidate)
@@ -193,7 +142,15 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
     private calcImageMargin() {
         let galleryWidth = this.getGalleryWidth()
         let ratio = galleryWidth / 1920
-        return Math.round(Math.max(1, this.providedImageMargin * ratio))
+
+        let margin = Math.round(Math.max(0, this.providedImageMargin * ratio))
+
+        if(this.providedImageMargin > 0 && margin < 1)
+        {
+            margin = 1
+        }
+
+        return margin
     }
 
     private calcOriginalRowWidth(imgRow: any[]) {
@@ -230,7 +187,7 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
             if (imgRow !== this.gallery[this.gallery.length - 1]) {
                 let ratio = (this.getGalleryWidth() - (imgRow.length - 1) * this.calcImageMargin()) / originalRowWidth
 
-                imgRow.forEach((img: any) => {
+                imgRow.forEach((img : any) => {
                     img['width'] = img[this.minimalQualityCategory]['width'] * ratio
                     img['height'] = img[this.minimalQualityCategory]['height'] * ratio
                     maximumGalleryImageHeight = Math.max(maximumGalleryImageHeight, img['height'])
@@ -238,7 +195,7 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
                 })
             }
             else {
-                imgRow.forEach((img: any) => {
+                imgRow.forEach((img : any) => {
                     img.width = img[this.minimalQualityCategory]['width']
                     img.height = img[this.minimalQualityCategory]['height']
                     maximumGalleryImageHeight = Math.max(maximumGalleryImageHeight, img['height'])
@@ -256,11 +213,11 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
         this.ChangeDetectorRef.detectChanges()
     }
 
-    private checkForAsyncLoading(image: any, imageCounter: number) {
+    private checkForAsyncLoading(image : any, imageCounter: number) {
         let imageElements = this.imageElements.toArray()
 
         if (image['galleryImageLoaded'] ||
-            (imageElements.length > 0 && imageElements.length > imageCounter && this.isScrolledIntoView(imageElements[imageCounter].nativeElement))) {
+            (imageElements.length > 0 && this.isScrolledIntoView(imageElements[imageCounter].nativeElement))) {
             image['galleryImageLoaded'] = true
             image['srcAfterFocus'] = image[this.minimalQualityCategory]['path']
         }
@@ -269,7 +226,7 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
-    private isScrolledIntoView(element: any) {
+    private isScrolledIntoView(element : any) {
         let elementTop = element.getBoundingClientRect().top
         let elementBottom = element.getBoundingClientRect().bottom
 

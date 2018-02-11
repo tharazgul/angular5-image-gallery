@@ -1,21 +1,16 @@
 <div class="mainContainer">
-  <div class="headlineContainer">
-    angular5-image-gallery &nbsp;
-    <a class="github-button" href="https://github.com/tharazgul/angular5-image-gallery" data-style="mega"
-       data-count-href="/tharazgul/angular5-image-gallery/stargazers"
-       data-count-api="/repos/tharazgul/angular5-image-gallery#stargazers_count"
-       data-count-aria-label="# stargazers on GitHub"
-       aria-label="Star tharazgul/angular5-image-gallery on GitHub">Star</a>
-  </div>
-  <input mdInput [(ngModel)]="flexBorderSize" type="number" min="1" max="50" placeholder="Space between images">
-  <input mdInput [(ngModel)]="flexImageSize" type="number" min="0" max="50" placeholder="Image size">
+  <div class="headlineContainer">ANGULAR 5 IMAGE GALLERY DEMO</div>
+  <input mdInput [(ngModel)]="flexBorderSize" type="number" min="0" max="50" placeholder="Space between images">
+  <input mdInput [(ngModel)]="flexImageSize" type="number" min="1" max="50" placeholder="Image size">
   <input mdInput [(ngModel)]="galleryName" placeholder="Gallery name">
-
-  <gallery [metadataUri]=""
-           (viewerChange)="onViewerVisibilityChanged($event)"
-           [flexBorderSize]="flexBorderSize"
+  <input mdInput [(ngModel)]="containerBackgroundColor" placeholder="Background color">
+  <br/><br/>
+  <gallery (viewerChange)="onViewerVisibilityChanged($event)"
+           [flexBorderSize]="flexBorderSize"           
            [flexImageSize]="flexImageSize"
-           [galleryName]="galleryName"></gallery>
+           [galleryName]="galleryName"
+           [containerBackgroundColor]="containerBackgroundColor">
+  </gallery>
 
   <br/><br/>
   <span>built with </span><a

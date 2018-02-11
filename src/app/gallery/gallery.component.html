@@ -1,21 +1,18 @@
-<div #galleryContainer class="galleryContainer">
-    <div *ngIf="gallery.length === 0"> No images to display for given filter</div>
-    <div *ngIf="gallery.length !== 0" class="innerGalleryContainer">
+<div #galleryContainer class="galleryContainer" 
+    [style.background-color]="providedContainerBackgroundColor">
+    <div class="innerGalleryContainer">
         <div *ngFor='let imgrow of gallery; let i = index'
              class="imagerow"
-             [style.margin-bottom.px]="1">
-            <div *ngFor='let img of imgrow; let j = index'
-                 [style.width.px]="img['width']+1"
-                 [style.height.px]="img['height']+1">
-                <img #imageElement
-                     class="thumbnail"
-                     [style.width.px]="img['width']"
-                     [style.height.px]="img['height']"
-                     (click)="openImageViewer(img)"
-                     [src]="(img['srcAfterFocus'] | image) | async"
-                     [style.background]="img.dominantColor"
-                     [style.margin-right.px]="calcImageMargin()"/>                
-            </div>
+             [style.margin-bottom.px]="calcImageMargin()">
+            <img #imageElement
+                 *ngFor='let img of imgrow; let j = index'
+                 class="thumbnail"
+                 [style.width.px]="img['width']"
+                 [style.height.px]="img['height']"
+                 (click)="openImageViewer(img)"
+                 [src]="img['srcAfterFocus']"
+                 [style.background]="img.dominantColor"
+                 [style.margin-right.px]="calcImageMargin()"/>
         </div>
     </div>
 </div>

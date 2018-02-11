@@ -30,17 +30,21 @@
     "ngc-build": "ngc -p ./src/tsconfig.ngc.json",
     "dist": "npm run clear-lib && npm run ngc-build"
   },
+  "typings": "./index.d.ts",
+  "main": "./index.js",
   "bin": {
     "angular5-image-gallery": "./misc/convert.js"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "^5.2.0",
+    "@angular/cdk": "^5.2.0",
     "@angular/common": "^5.2.0",
     "@angular/compiler": "^5.2.0",
     "@angular/core": "^5.2.0",
     "@angular/forms": "^5.2.0",
     "@angular/http": "^5.2.0",
+    "@angular/material": "^5.2.0",
     "@angular/platform-browser": "^5.2.0",
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
@@ -84,5 +88,16 @@
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
     "@angular/animations": "^5.2.0"
-  }
+  },
+  "keywords": [
+    "angular2",
+    "image",
+    "gallery",
+    "viewer",
+    "photo",
+    "ng2",
+    "ng",
+    "angular",
+    "angular4"
+  ]
 }
