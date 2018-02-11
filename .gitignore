@@ -5,6 +5,7 @@
 /dist-server
 /tmp
 /out-tsc
+/src/assets/img/gallery
 
 # dependencies
 /node_modules
@@ -43,3 +44,4 @@ testem.log
 Thumbs.db
 
 \.directory
+
