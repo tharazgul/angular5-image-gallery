@@ -61,11 +61,11 @@
 }
 
 .arrow.left {
-    left: 2vw;
+    left: 1vw;
 }
 
 .arrow.right {
-    right: 2vw;
+    right: 1vw;
 }
 
 .arrow:not(.activeArrow):hover {
@@ -76,8 +76,8 @@
 
 .buttonContainer {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 1vw;
+    right: 1vw;
     height: 20px;
     text-align: center;
     opacity: 1.0;
@@ -153,4 +153,27 @@ md-button-toggle.checked {
     direction: ltr;
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
+}
+
+.infoContainer {
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+    height: 50px;    
+    text-align: center;     
+    opacity: 0.6;
+    z-index: 300;
+    background-color: black;
+    color: white;
+    transition: all ease-out 0.5s;  
+    left: 0px;
+    padding-top:10px;
+    font-size: 16px;
+    
+    
+}
+
+.description {    
+    color: white;
+    font-size: 12px;    
 }

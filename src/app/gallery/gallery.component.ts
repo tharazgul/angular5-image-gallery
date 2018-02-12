@@ -15,7 +15,7 @@ import 'rxjs/add/operator/map'
 export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
     @Input('flexBorderSize') providedImageMargin: number = 1
     @Input('flexImageSize') providedImageSize: number = 7
-    @Input('galleryName') providedGalleryName: string = ''
+    @Input('galleryName') providedGalleryName: string = 'demo'
     @Input('containerBackgroundColor') providedContainerBackgroundColor: string = '#222222'
     @Input('metadataUri') providedMetadataUri: string = undefined
 
